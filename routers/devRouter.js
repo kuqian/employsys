@@ -8,46 +8,42 @@ router.use(function (req, res, next) {
     console.log("enter dev api:");
     next();
 });
-router.route("/")
+router.route("/manager")
     .get(function (req, res) {
-        console.log("dev query:");
-        console.log(req.query);
-        const query = Employee.find({function(error, emp){
-            if(error){
-                console.log(error);
-            }
-        }});
-        const option = {
-            page: 1,
-            limit: 8
-        }
-        Employee.paginate(query, option)
-            .then((result) => {
-                res.json(result);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-
-    })
-    .post(function (req, res) {
-        console.log("importing employeelist");
-        const initData = req.body.initData.map((ele) => {
-            ele.office_phone = "" + ele.office_phone;
-            ele.cell_phone = "" + ele.cell_phone;
-            ele.sms = "" + ele.sms;
-            ele.manager = null;
-            ele.dr = [];
-            return ele;
-        })
-        console.log(initData);
-        Employee.insertMany(initData, function (error, emps) {
-            if (error) {
-                res.status(500).send({ status: 500, message: 'database save fail', type: 'server error', error: error });
-            } else {
-                res.json({ message: "database initialization success" });
+        console.log("get the manager");
+        Employee.find({ _id: req.query.manager_id }, function (error, docs) {
+            if (error) res.status(500).send({ status: 500, message: "database error" });
+            else {
+                res.json(docs);
             }
         })
-
     });
+router.route("/dr")
+    .get(async function (req, res) {
+        console.log(`get the dr of: ${req.query.eid}`);
+        const emp = await Employee.findById(req.query.eid);
+        console.log(typeof(emp.dr));
+        console.log(emp.dr);
+        Employee.find({ '_id': { $in: emp.dr } }, function (error, docs) {
+            if (error) res.status(500).send({ status: 500, message: "database error" });
+            else {
+                res.json(docs);
+            }
+        })
+    });
+router.route("/managerlist")
+    .get(function (req, res) {
+        console.log("get list of manager id and name");
+        Employee.find({}, "name _id", function (error, docs) {
+            if (error) {
+                res.status(500).send({ status: 500, message: "database", type: "server error" });
+            } else {
+                res.json(docs);
+            }
+        });
+    })
+router.route("/testimag")
+    .post(function(req, res){
+        console.log();
+    })
 module.exports = router;

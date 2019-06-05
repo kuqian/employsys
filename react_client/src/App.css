@@ -4,6 +4,52 @@
 .emppage-container{
   position: relative;
   width: 95%;
+  height: 650px;
+  margin: 60px auto;
+  border: solid 1px black;
+  border-radius: 10px;
+  border-color: rgb(172, 171, 171)
+}
+.tag:hover{
+  color: rgb(0, 174, 255);
+}
+.createpage-container{
+  position: relative;
+  width: 75%;
   height: 800px;
-  margin: 20px auto;
+  margin: 60px auto;
+  border: solid 1px black;
+  border-radius: 10px;
+  border-color: rgb(172, 171, 171);
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+.form-container{
+  position: absolute;
+  display: inline-block;
+  width: 49%;
+  height: 100%;
+}
+.btn-bar{
+  margin-left: 13%;
+  margin-top: 20px;
+}
+.upload-container{
+  display: inline-block;
+  width: 49%;
+  height: 100%;
+  border-right: solid 1px lightgray;
+  text-align:center;
+}
+.img-container{
+  position: relative;
+  top: 150px;
+  width: 200px;
+  height: 200px;
+  border: solid 1px light grey;
+}
+.img-selector{
+  position: relative;
+  top:160px;
+  left: 20px;
 }

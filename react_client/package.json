@@ -5,7 +5,10 @@
   "dependencies": {
     "@material-ui/core": "^4.0.1",
     "axios": "^0.18.0",
+    "base64-img": "^1.0.4",
+    "dateformat": "^3.0.3",
     "react": "^16.8.6",
+    "react-avatar-editor": "^11.0.7",
     "react-dom": "^16.8.6",
     "react-infinite-scroller": "^1.2.4",
     "react-loader-spinner": "^2.3.0",
