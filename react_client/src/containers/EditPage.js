@@ -12,7 +12,7 @@ class EditPage extends Component {
   constructor(props) {
     super(props);
     const { name, title, sex, start_date, office_phone, cell_phone,
-      sms, email, manager } = this.props.initEmployee;
+      sms, email, manager, imagePath } = this.props.initEmployee;
     this.state = {
       name: name,
       title: title,
@@ -23,8 +23,10 @@ class EditPage extends Component {
       sms: sms,
       email: email,
       manager: manager ? manager.manager_id : "",
-      imgURL: defaultAvatar
+      imgURL: imagePath && imagePath.length > 7 ? imagePath : defaultAvatar
     }
+    console.log(`image: ${imagePath}`)
+    this.imgRef = React.createRef();
   }
   //--------------all the field change handler
   handleNameChange = (e) => {
@@ -67,25 +69,39 @@ class EditPage extends Component {
     console.log("inside img change handler");
     this.setState({ imgURL: URL.createObjectURL(e.target.files[0]) });
   }
+  handleBack = () => {
+    console.log("go back to main page");
+    this.props.history.push("/");
+  }
   handleSubmit = (e) => {
     console.log("inside submit");
-    // e.preventDefault();
+    e.preventDefault();
+    const reader = new FileReader();
+    const imgFile = this.imgRef.files[0];
+    const self = this;
+    reader.addEventListener("load", function () {
+      self.submitHelper(reader.result);
+      console.log(typeof (reader.result));
+    });
+    if (imgFile) {
+      console.log("image conversion success");
+      reader.readAsDataURL(imgFile);
+    } else {
+      this.submitHelper("noimage");
+    }
+  }
+  submitHelper = (data) => {
+    console.log("inside helper");
     const { name, title, sex, start_date,
       office_phone, cell_phone, sms, email, manager } = this.state;
     this.props.editEmployee(
       {
         name, title, sex, start_date, office_phone,
         cell_phone, sms, email, manager,
-        _id: this.props.initEmployee._id
+        _id: this.props.initEmployee._id,
+        img: data
       }, this.props.history
     );
-  }
-  handleBack = () => {
-    console.log("go back to main page");
-    this.props.history.push("/");
-  }
-  fuckyou = () => {
-    console.log("fuckyou ");
   }
   //------------------------------------------
   render() {
@@ -101,7 +117,7 @@ class EditPage extends Component {
         <div className="createpage-container">
           <div className="upload-container">
             <img src={imgURL} alt="avatar" className="img-container" />
-            <input type="file" className="img-selector" onChange={this.handleImgFileChange} />
+            <input type="file" className="img-selector" onChange={this.handleImgFileChange} ref={(ref) => this.imgRef = ref}/>
           </div>
           <Form
             nameChange={this.handleNameChange}

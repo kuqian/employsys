@@ -2,6 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const Employee = require("../models/employee");
 const router = express.Router();
+const base64Img = require('base64-img');
+const uniqid = require('uniqid');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(function (req, res, next) {
@@ -44,6 +46,15 @@ router.route("/managerlist")
     })
 router.route("/testimag")
     .post(function(req, res){
-        console.log();
+        console.log("img:");
+        console.log(typeof(req.body.img));
+        console.log(__dirname);
+        const name = uniqid();
+        // base64Img.imgSync(req.body.img, './zpics', name, function(err, filepath) {
+        //     res.json({message: "test success", path:filepath});
+        //     if(err)console.log("error");
+        // });
+        const filepath = base64Img.imgSync(req.body.img, './zpics', name);
+        res.json({message: "test success", path:filepath});
     })
 module.exports = router;

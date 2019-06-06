@@ -2,6 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const Employee = require("../models/employee");
 const router = express.Router();
+const base64Img = require('base64-img');
+const uniqid = require('uniqid');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(function (req, res, next) {
@@ -11,7 +13,15 @@ router.use(function (req, res, next) {
 router.route("/")
     .post(async function (req, res) {
         console.log("creating a new employee");
+        let imagePath = "noimage";
+        if (req.body.img.length > 7) {
+            const webPath = 'http://localhost:8080/';
+            const imageName = uniqid();
+            const relativePath = base64Img.imgSync(req.body.img, './zpics', imageName);
+            imagePath = webPath + relativePath;
+        }
         const emp = new Employee();
+        emp.imagePath = imagePath;
         emp.name = req.body.name;
         emp.title = req.body.title;
         emp.sex = req.body.sex;
@@ -97,7 +107,7 @@ router.route("/:employee_id")
         const newManager = req.body.manager ? await Employee.findById(req.body.manager) : null;
         emp.manager = null;
         const same1 = oldManager === newManager;
-        const same2 = (oldManager!==null && newManager!==null) && oldManager._id.equals(newManager._id);
+        const same2 = (oldManager !== null && newManager !== null) && oldManager._id.equals(newManager._id);
         if (!same1 && !same2) {
             if (oldManager) {
                 const index = oldManager.dr.indexOf(emp._id);
@@ -132,6 +142,13 @@ router.route("/:employee_id")
         list.forEach((key) => {
             emp[key] = req.body[key];
         });
+        if(req.body.img.length > 7){
+            const webPath = 'http://localhost:8080/';
+            const imageName = uniqid();
+            const relativePath = base64Img.imgSync(req.body.img, './zpics', imageName);
+            imagePath = webPath + relativePath;
+            emp.imagePath = imagePath;
+        }
         console.log(emp);
         console.log(oldManager);
         console.log(newManager);
@@ -163,9 +180,9 @@ router.route("/:employee_id")
                 manager.dr.push(drID);
                 console.log(`${dr.name} -> ${manager.name}`);
             } else {
-                if(dr !== null) dr.manager = null;
+                if (dr !== null) dr.manager = null;
             }
-            if(dr !== null) await dr.save();
+            if (dr !== null) await dr.save();
         }
         if (manager) {
             await manager.save();

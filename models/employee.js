@@ -20,7 +20,8 @@ const EmployeeSchema = new Schema({
     dr: {
         type: Array,
         default: []
-    }
+    },
+    imagePath: String
 });
 EmployeeSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model("Employee", EmployeeSchema);

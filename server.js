@@ -24,11 +24,12 @@ app.use(function(req, res, next){
     console.log("allow cors");
     next();
 })
+app.use('/zpics', express.static('zpics'))
 app.use("/api/employee", employeeRouter);
 app.use("/api/dev", devRouter);
 app.get('*', function (req, res) {
     res.status(404).send('route not found');
-    console.log("???");
+    console.log('route not found');
 });
 app.listen(PORT);
 console.log("server set up on port: " + PORT);

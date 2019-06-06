@@ -7,7 +7,6 @@ import Aux from '../hoc/Aux';
 import { createGetList, createEmployee } from '../redux/actions';
 import dateFormat from 'dateformat';
 import defaultAvatar from '../assets/default.png';
-import base64Img from 'base64-img';
 //import AvatarEditor from 'react-avatar-editor';
 class CreatePage extends Component {
   constructor(props) {
@@ -24,6 +23,7 @@ class CreatePage extends Component {
       manager: "",
       imgURL: defaultAvatar
     }
+    this.imgRef = React.createRef();
   }
   componentDidMount() {
     this.props.createGetList();
@@ -67,23 +67,44 @@ class CreatePage extends Component {
   }
   handleImgFileChange = (e) => {
     console.log("inside img change handler");
-    this.setState({imgURL:URL.createObjectURL(e.target.files[0])});
-  }
-  handleSubmit = (e) => {
-    console.log("inside submit");
-    e.preventDefault();
-    const { name, title, sex, start_date,
-      office_phone, cell_phone, sms, email, manager } = this.state;
-    this.props.createEmployee(
+    this.setState(
       {
-        name, title, sex, start_date, office_phone,
-        cell_phone, sms, email, manager
-      }, this.props.history
+        imgURL: URL.createObjectURL(e.target.files[0])
+      }
     );
   }
   handleBack = () => {
     console.log("go back to main page");
     this.props.history.push("/");
+  }
+  handleSubmit = (e) => {
+    console.log("inside submit");
+    e.preventDefault();
+    const reader = new FileReader();
+    const imgFile = this.imgRef.files[0];
+    const self = this;
+    reader.addEventListener("load", function () {
+      self.submitHelper(reader.result);
+      console.log(typeof (reader.result));
+    });
+    if (imgFile) {
+      console.log("image conversion success");
+      reader.readAsDataURL(imgFile);
+    }else{
+      this.submitHelper("noimage");
+    }
+  }
+  submitHelper = (data) => {
+    console.log("inside helper");
+    const { name, title, sex, start_date,
+      office_phone, cell_phone, sms, email, manager } = this.state;
+    this.props.createEmployee(
+      {
+        name, title, sex, start_date, office_phone,
+        cell_phone, sms, email, manager,
+        img:data
+      }, this.props.history
+    );
   }
   //------------------------------------------
   render() {
@@ -98,8 +119,8 @@ class CreatePage extends Component {
         </div>
         <div className="createpage-container">
           <div className="upload-container">
-            <img src={imgURL} alt="avatar" className="img-container"/>
-            <input type="file" className="img-selector" onChange={this.handleImgFileChange}/>
+            <img src={imgURL} alt="avatar" className="img-container" />
+            <input type="file" className="img-selector" onChange={this.handleImgFileChange} ref={(ref) => this.imgRef = ref} />
           </div>
           <Form
             init={null}
@@ -122,7 +143,6 @@ class CreatePage extends Component {
             email={email}
             manager={manager}
             managerlist={managerlist}
-            handleSubmit={this.handleSubmit}
           />
         </div>
       </Aux>
