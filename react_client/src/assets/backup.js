@@ -127,15 +127,12 @@ router.route("/:employee_id")
         }
         if (req.body.name !== emp.name) {
             emp.name = req.body.name;
-            const arr = [];
             for (let drID of emp.dr) {
                 const dr = await Employee.findById(drID);
                 dr.manager.manager_name = req.body.name;
-                // await dr.save();
-                arr.push(dr.save());
+                await dr.save();
                 console.log(dr.name + " manager name change");
             }
-            await Promise.all(arr);
         }
         const list = [
             "title", "sex", "start_date",
@@ -176,7 +173,6 @@ router.route("/:employee_id")
                 manager.dr = [...a1, ...a2];
             }
         }
-        const promiseArr = [];
         for (let drID of emp.dr) {
             const dr = await Employee.findById(drID);
             if (manager) {
@@ -186,12 +182,8 @@ router.route("/:employee_id")
             } else {
                 if (dr !== null) dr.manager = null;
             }
-            if (dr !== null){
-                //await dr.save();
-                promiseArr.push(dr.save());
-            }
+            if (dr !== null) await dr.save();
         }
-        Promise.all(promiseArr);
         if (manager) {
             await manager.save();
         }

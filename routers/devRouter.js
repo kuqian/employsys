@@ -4,7 +4,7 @@ const Employee = require("../models/employee");
 const router = express.Router();
 const base64Img = require('base64-img');
 const uniqid = require('uniqid');
-router.use(bodyParser.json());
+router.use(bodyParser.json({ limit: '5MB' }));
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(function (req, res, next) {
     console.log("enter dev api:");

@@ -87,6 +87,7 @@ class EditPage extends Component {
       console.log("image conversion success");
       reader.readAsDataURL(imgFile);
     } else {
+      console.log("noimage");
       this.submitHelper("noimage");
     }
   }

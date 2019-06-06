@@ -10,13 +10,6 @@ const Employee = (props) => {
   const manager_name = manager ? manager.manager_name : "N/A";
   const manager_id = manager ? manager.manager_id : "";
   const dr_count = dr.length;
-  console.log(new Date(start_date.substring(0, 10) + " PST"));
-  if(imagePath && imagePath.length > 7 ){
-    console.log(imagePath);
-  }else{
-    console.log(props.employee);
-
-  }
   return (
     <TableRow hover={true}>
       <TableCell align="left">
@@ -29,7 +22,7 @@ const Employee = (props) => {
       <TableCell align="left">{title}</TableCell>
       <TableCell align="left">{sex}</TableCell>
       <TableCell align="left">{start_date.substring(0, 10)}</TableCell>
-      <TableCell align="left">{office_phone}</TableCell>
+      <TableCell align="left"><a href={`tel:${office_phone}`}>{office_phone}</a></TableCell>
       <TableCell align="left">{cell_phone}</TableCell>
       <TableCell align="left">{sms}</TableCell>
       <TableCell align="left">{email}</TableCell>
